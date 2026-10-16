@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clone Attack · The Digital Doppelgänger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  body { font-family: Inter, system-ui, sans-serif; }
+  mark.ex { background: #FDE2E4; color: #B42318; border-radius: 6px; padding: 1px 5px; cursor: pointer; transition: background .15s; }
+  mark.ex:hover { background: #FBC9CE; }
+  .msg mark.ex { padding: 0 3px; cursor: default; }
+  .gen { color: #98A2B3; font-style: italic; }
+  .hidden-pill { background: #ECFDF3; color: #067647; border: 1px dashed #75E0A7; border-radius: 6px; padding: 1px 6px; cursor: pointer; font-size: .92em; }
+  .hidden-pill:hover { background: #D1FADF; }
+  .tab-active { color: #5B4BDB; border-color: #5B4BDB; }
+  .persona.active { border-color: #5B4BDB; background: #F5F3FF; box-shadow: 0 0 0 1px #5B4BDB inset; }
+  .sev-High { background: #FDE2E4; color: #B42318; }
+  .sev-Medium { background: #FEF0C7; color: #B54708; }
+  .sev-Low { background: #DCFAE6; color: #067647; }
+  .stamp { position: absolute; top: 8px; right: 8px; font-size: 9px; letter-spacing: .12em; font-weight: 700; color: #B42318; border: 1px solid #F9A8B0; border-radius: 4px; padding: 1px 5px; background: #fff; opacity: .85; }
+  .gauge-arc { transition: stroke-dasharray .7s cubic-bezier(.2,.8,.2,1), stroke .4s; }
+  .fade-in { animation: fadeIn .45s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .pulse-dot { animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: .3 } 50% { opacity: 1 } }
+  .toast { transition: opacity .3s, transform .3s; }
+</style>
+</head>
+<body class="bg-page text-ink min-h-screen">
+
+<!-- Header -->
+<header class="bg-ink text-white">
+  <div class="max-w-[1536px] mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between">
+    <a href="#" class="flex items-center gap-3">
+      <div class="w-11 h-11 rounded-xl bg-white/10 grid place-items-center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
+      </div>
+      <div class="leading-tight">
+        <div class="text-[20px] font-bold">Clone <span class="text-brand-soft">Attack</span></div>
+        <div class="text-[13px] text-white/70 hidden sm:block">The Digital Doppelgänger</div>
+      </div>
+    </a>
+    <nav class="flex items-center gap-2 sm:gap-8 text-sm font-medium">
+      <a href="#how" class="hidden md:inline hover:text-brand-soft">How it works</a>
+      <a href="#examples" class="hidden md:inline hover:text-brand-soft">Examples</a>
+      <a href="#about" class="hidden md:inline hover:text-brand-soft">About</a>
+      <button id="stayBtn" class="ml-2 inline-flex items-center gap-2 bg-brand hover:bg-[#4A3BC8] rounded-xl px-4 sm:px-5 py-3 text-sm font-semibold">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></svg>
+        <span class="hidden sm:inline">Stay Unphishable</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-[1536px] mx-auto px-4 sm:px-6 py-6 grid gap-6 lg:grid-cols-[minmax(0,575px)_minmax(0,1fr)]">
+
+  <!-- LEFT: input -->
+  <section class="bg-white rounded-2xl border border-line shadow-sm p-6 sm:p-7 self-start" id="examples">
+    <span class="inline-block text-[12px] font-semibold tracking-wider text-brand bg-brand-light rounded-lg px-3 py-1.5">VIBETHON • UNPHISHABLE</span>
+    <h1 class="mt-5 text-[40px] sm:text-[48px] leading-[1.08] font-extrabold tracking-tight">See the scams<br />written <span class="text-brand-soft">for you</span><span class="text-brand-soft">.</span></h1>
+    <p class="mt-4 text-[17px] sm:text-[19px] text-ink/80 leading-snug">Paste your public bio or recent posts and see how scammers could use your own information against you.</p>
+
+    <div class="mt-7 grid grid-cols-2 bg-page rounded-xl border border-line p-1 text-[15px] font-medium">
+      <button data-mode="sample" class="mode-tab rounded-lg py-2.5 bg-white shadow-sm text-ink border-b-2 tab-active">Try a sample</button>
+      <button data-mode="own" class="mode-tab rounded-lg py-2.5 text-ink/60 border-b-2 border-transparent">Paste your own</button>
+    </div>
+
+    <div id="personaWrap" class="mt-6">
+      <p class="text-[15px] text-ink/70 mb-3">Or pick a sample persona to try:</p>
+      <div class="grid grid-cols-3 gap-3">
+        <button data-p="student" class="persona active text-left border border-line rounded-xl p-3">
+          <div class="flex items-center gap-2 font-semibold text-[14px] text-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Student</div>
+          <div class="text-[11.5px] text-ink/60 mt-1">College, hostel, clubs</div>
+        </button>
+        <button data-p="hr" class="persona text-left border border-line rounded-xl p-3">
+          <div class="flex items-center gap-2 font-semibold text-[14px]"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>HR Manager</div>
+          <div class="text-[11.5px] text-ink/60 mt-1">Work, team, travel</div>
+        </button>
+        <button data-p="parent" class="persona text-left border border-line rounded-xl p-3">
+          <div class="flex items-center gap-2 font-semibold text-[14px]"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Parent</div>
+          <div class="text-[11.5px] text-ink/60 mt-1">Family, kids, school</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-7 flex items-center justify-between">
+      <label for="bio" class="font-semibold text-[15px]">Your bio / posts</label>
+      <button id="clearBtn" class="text-[14px] text-ink/50 hover:text-ink">Clear</button>
+    </div>
+    <textarea id="bio" maxlength="1000" rows="6" class="mt-2 w-full rounded-xl border border-line p-4 text-[15px] leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand/40 resize-y" placeholder="Paste your Instagram bio, Twitter/X bio, LinkedIn summary or recent posts here..."></textarea>
+    <div class="text-right text-[13px] text-ink/50 mt-1"><span id="count">0</span>/1000</div>
+
+    <button id="genBtn" class="mt-4 w-full bg-ink hover:bg-black text-white rounded-xl py-4 text-[17px] font-semibold flex items-center justify-center gap-3 disabled:opacity-70">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+      <span id="genLabel">Generate Attack</span>
+    </button>
+    <p class="mt-4 text-center text-[14px] text-ink/50 flex items-center justify-center gap-2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+      Nothing is stored. Simulation only.
+    </p>
+  </section>
+
+  <!-- RIGHT: results -->
+  <section class="flex flex-col gap-6 min-w-0">
+
+    <!-- Empty state -->
+    <div id="empty" class="bg-white rounded-2xl border border-line shadow-sm p-10 text-center grid place-items-center min-h-[520px]">
+      <div>
+        <div class="mx-auto w-16 h-16 rounded-2xl bg-brand-light grid place-items-center text-brand">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <h2 class="mt-5 text-xl font-bold">What would a scammer write to you?</h2>
+        <p class="mt-2 text-ink/60 max-w-md mx-auto">Pick a persona or paste your own bio, then hit <b>Generate Attack</b>. You'll see your Cloneability score, the scams built from your details, and how to shut them down.</p>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="loading" class="hidden bg-white rounded-2xl border border-line shadow-sm p-10 min-h-[520px] grid place-items-center text-center">
+      <div>
+        <div class="flex gap-2 justify-center"><span class="pulse-dot w-3 h-3 rounded-full bg-brand"></span><span class="pulse-dot w-3 h-3 rounded-full bg-brand" style="animation-delay:.2s"></span><span class="pulse-dot w-3 h-3 rounded-full bg-brand" style="animation-delay:.4s"></span></div>
+        <p id="loadMsg" class="mt-5 text-lg font-semibold">Reading your bio like a scammer would…</p>
+        <p class="mt-1 text-ink/50 text-sm">Finding names, places and links between details</p>
+      </div>
+    </div>
+
+    <div id="results" class="hidden flex-col gap-6">
+      <!-- Score card -->
+      <div class="bg-white rounded-2xl border border-line shadow-sm p-6 fade-in">
+        <h2 class="text-[19px] font-bold flex items-center gap-2">Cloneability Score
+          <span title="How easily someone could impersonate you or build a convincing scam from your public info (0 = hard, 100 = easy)." class="text-ink/40 cursor-help"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+        </h2>
+        <div class="mt-3 grid gap-6 md:grid-cols-[1fr_auto_1.1fr] items-center">
+          <div class="text-center">
+            <svg viewBox="0 0 240 135" class="w-[260px] max-w-full mx-auto">
+              <path d="M 25 120 A 95 95 0 0 1 215 120" fill="none" stroke="#ECEEF3" stroke-width="22" stroke-linecap="round" pathLength="100"/>
+              <path id="arc" class="gauge-arc" d="M 25 120 A 95 95 0 0 1 215 120" fill="none" stroke="#F04438" stroke-width="22" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/>
+              <text id="scoreNum" x="112" y="112" text-anchor="end" font-size="42" font-weight="800" fill="#151827">0</text>
+              <text x="118" y="112" font-size="17" fill="#667085">/ 100</text>
+            </svg>
+            <span id="scoreTag" class="inline-block mt-1 text-[14px] font-semibold rounded-full px-3 py-1 sev-High">Highly cloneable</span>
+            <p id="scoreDesc" class="mt-2 text-[14px] text-ink/60 max-w-[300px] mx-auto">Your bio contains several specific details that can be used to craft convincing scams.</p>
+          </div>
+          <div class="hidden md:block w-px h-40 bg-line"></div>
+          <div class="rounded-xl border border-line bg-page/60">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center text-center py-5">
+              <div><div class="text-[14px] text-ink/60">Before</div><div id="beforeNum" class="text-[30px] font-extrabold text-[#D92D20]">0</div><div class="text-[13px] text-ink/50">/100</div></div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <div><div class="text-[14px] text-ink/60">After</div><div id="afterNum" class="text-[30px] font-extrabold text-[#079455]">0</div><div class="text-[13px] text-ink/50">/100</div></div>
+            </div>
+            <div class="border-t border-line p-3">
+              <div id="gainBox" class="rounded-lg bg-[#ECFDF3] border border-[#D1FADF] text-[#067647] text-[15px] font-semibold py-3 px-3 text-center flex items-center justify-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></svg>
+                <span id="gainText">Click highlighted phrases to lock them down</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attacks + fixes -->
+      <div class="bg-white rounded-2xl border border-line shadow-sm p-5 sm:p-6 fade-in" id="panel">
+        <div class="flex gap-6 border-b border-line">
+          <button data-tab="attacks" class="res-tab pb-3 -mb-px border-b-2 font-semibold text-[16px] flex items-center gap-2 tab-active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v4M12 16h.01"/></svg>
+            <span>Attack Scenarios (<span id="attackCount">3</span>)</span></button>
+          <button data-tab="fixes" class="res-tab pb-3 -mb-px border-b-2 border-transparent font-semibold text-[16px] text-ink/60 flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>Fix Checklist (<span id="fixCount">0</span>)</span></button>
+        </div>
+
+        <div id="attacksView" class="mt-5 grid gap-4 xl:grid-cols-3"></div>
+        <div id="fixesView" class="mt-5 hidden flex-col gap-2"></div>
+
+        <div class="mt-7 flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-[17px] font-bold flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B4BDB" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+            Your Bio with Exploited Phrases</h3>
+          <div class="text-[13px] text-ink/50 flex items-center gap-3">
+            <span>Click any highlighted phrase to hide it and see the score drop.</span>
+            <button id="resetBtn" class="hidden text-brand font-semibold">Reset</button>
+          </div>
+        </div>
+        <div id="bioView" class="mt-3 rounded-xl border border-line bg-page/50 p-5 text-[17px] leading-[2.1]"></div>
+        <p id="sourceNote" class="mt-3 text-[12px] text-ink/40"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Info sections -->
+<section class="max-w-[1536px] mx-auto px-4 sm:px-6 pb-12 grid gap-6 md:grid-cols-2">
+  <div id="how" class="bg-white rounded-2xl border border-line p-6">
+    <h3 class="text-lg font-bold">How it works</h3>
+    <ol class="mt-3 space-y-3 text-[15px] text-ink/75">
+      <li><b class="text-ink">1. Paste.</b> Your own bio or recent posts: the same thing a stranger sees.</li>
+      <li><b class="text-ink">2. Attack.</b> AI plays the scammer and writes the 3 most likely attacks, showing exactly which details it used.</li>
+      <li><b class="text-ink">3. Defend.</b> Hide a detail and the attacks get vaguer while your Cloneability score drops. Then apply the fixes on your real profiles.</li>
+    </ol>
+  </div>
+  <div id="about" class="bg-white rounded-2xl border border-line p-6">
+    <h3 class="text-lg font-bold">About: a fire drill, not a weapon</h3>
+    <ul class="mt-3 space-y-2 text-[15px] text-ink/75 list-disc pl-5">
+      <li>Built for checking <b class="text-ink">your own</b> public footprint.</li>
+      <li>Every attack is stamped SIMULATION. No links, numbers or UPI IDs are ever generated, and there's no send button.</li>
+      <li>Nothing is stored or logged. Your text is used once and discarded.</li>
+      <li>Got a suspicious message? Report it at <b class="text-ink">1930</b> or on <b class="text-ink">Sanchar Saathi (Chakshu)</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<div id="toast" class="toast fixed bottom-5 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 pointer-events-none bg-ink text-white text-sm rounded-xl px-4 py-3 shadow-lg"></div>
+
+<script src="samples.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
