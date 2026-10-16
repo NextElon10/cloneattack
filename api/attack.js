@@ -7,7 +7,7 @@ The user pasted THEIR OWN public bio. Show them how a scammer in India could exp
 Return ONLY JSON with this exact shape:
 {
   "phrases": [
-    { "text": "<EXACT substring copied from the bio>", "weight": <3-20, how exploitable>, "generic": "<vague replacement, e.g. 'your college', 'there' for a name>", "fix": "<one concrete privacy action, max 14 words>" }
+    { "text": "<EXACT substring copied from the bio>", "weight": <3-20, how exploitable>, "generic": "<vague replacement, e.g. 'your college', 'there' for a name>", "fix": "<one concrete privacy action, max 14 words>", "cat": "<Identity|Location|Network|Family|Lifestyle>" }
   ],
   "attacks": [
     { "type": "dm",   "title": "Fake DM",       "subtitle": "<scenario, max 6 words>", "message": "<attack text>", "uses": ["<phrase text>", ...] },
@@ -82,7 +82,8 @@ function sanitize(raw, bio) {
       text,
       weight: Math.max(3, Math.min(20, Math.round(Number(p.weight) || 8))),
       generic: String(p.generic || "your details").slice(0, 40),
-      fix: String(p.fix || `Limit who can see "${text}"`).slice(0, 120)
+      fix: String(p.fix || `Limit who can see "${text}"`).slice(0, 120),
+      cat: ["Identity","Location","Network","Family","Lifestyle"].includes(p.cat) ? p.cat : undefined
     });
     if (phrases.length >= 8) break;
   }
